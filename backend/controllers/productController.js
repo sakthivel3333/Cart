@@ -10,15 +10,17 @@ const APIFeatures = require('../utils/apiFeatures');
 exports.getProducts = catchAsyncError(async (req, res, next) => {
     const resPerPage = 4;
     const apiFeatures = new APIFeatures(Product.find(), req.query).search().filter().paginate(resPerPage);
-    //return next(new ErrorHandler ('Unable to send products',400))
     const products = await apiFeatures.query;
-   // await new Promise(resolve => setTimeout(resolve, 1000))
+    const totalProductsCount = await Product.countDocuments({});
+
     res.status(200).json({
         success: true,
-        count: products.length,
+        count: totalProductsCount,
+        resPerPage,
         products
     });
 });
+
 
 // Create Product - /api/v1/products/new
 
